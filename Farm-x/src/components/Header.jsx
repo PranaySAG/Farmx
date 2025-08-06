@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
-// const [latLng, setLatLng] = useState({ lat: 20.5937, lng: 78.9629 });
+
 function MapClickHandler({ setLatLng }) {
   useMapEvents({
     click(e) {
@@ -20,15 +20,9 @@ function MapUpdater({ center }) {
   }, [center]);
   return null;
 }
-// useEffect(() => {
-//   navigator.geolocation.getCurrentPosition((pos) => {
-//     setLatLng({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-//   });
-// }, []);
-
 
 const MapLocationPicker = () => {
-  const [latLng, setLatLng] = useState({ lat: 20.5937, lng: 78.9629 }); // Default: India center
+  const [latLng, setLatLng] = useState({ lat: 20.5937, lng: 78.9629 });
   const [searchText, setSearchText] = useState('');
 
   const handleSearch = async () => {
@@ -44,29 +38,65 @@ const MapLocationPicker = () => {
     }
   };
 
+  const getCurrentLocation = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          setLatLng({ lat: latitude, lng: longitude });
+        },
+        (err) => {
+          alert('Unable to retrieve your location. Please enable location services.');
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by your browser.');
+    }
+  };
+
   return (
-    <div style={{ padding: '10px' }}>
-      <h3>Select Location</h3>
-      <input
-        type="text"
-        placeholder="Search city or village..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        style={{ padding: '6px', width: '60%' }}
-      />
-      <button onClick={handleSearch} style={{ marginLeft: '10px', padding: '6px 12px' }}>
-        Search
-      </button>
+    <div className="p-4 max-w-5xl mx-auto">
+      <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">📍 Select Your Location</h2>
 
-      <MapContainer center={[latLng.lat, latLng.lng]} zoom={6} style={{ height: '400px', marginTop: '20px' }}>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={[latLng.lat, latLng.lng]} />
-        <MapClickHandler setLatLng={setLatLng} />
-        <MapUpdater center={[latLng.lat, latLng.lng]} />
-      </MapContainer>
+      <div className="flex flex-col md:flex-row gap-4 md:items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search city or village..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className="flex-1 px-4 py-2 border rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        <div className="flex gap-2">
+          <button
+            onClick={handleSearch}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
+          >
+            🔍 Search
+          </button>
+          <button
+            onClick={getCurrentLocation}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm"
+          >
+            📌 Use Current Location
+          </button>
+        </div>
+      </div>
 
-      <p style={{ marginTop: '10px' }}>
-        📍 Selected Location: <strong>{latLng.lat.toFixed(4)}, {latLng.lng.toFixed(4)}</strong>
+      <div className="h-[350px] md:h-[500px] w-full rounded-lg overflow-hidden shadow-md">
+        <MapContainer
+          center={[latLng.lat, latLng.lng]}
+          zoom={6}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={[latLng.lat, latLng.lng]} />
+          <MapClickHandler setLatLng={setLatLng} />
+          <MapUpdater center={[latLng.lat, latLng.lng]} />
+        </MapContainer>
+      </div>
+
+      <p className="text-center mt-4 text-base md:text-lg">
+        📌 Selected Location: <strong>{latLng.lat.toFixed(4)}, {latLng.lng.toFixed(4)}</strong>
       </p>
     </div>
   );
