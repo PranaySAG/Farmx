@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
+import { motion } from 'framer-motion';
 
 function MapClickHandler({ setLatLng }) {
   useMapEvents({
@@ -55,10 +56,27 @@ const MapLocationPicker = () => {
   };
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
-      <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">📍 Select Your Location</h2>
+    <motion.div
+      className="p-4 max-w-5xl mx-auto"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <motion.h2
+        className="text-xl md:text-2xl font-bold mb-4 text-center"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        📍 Select Your Location
+      </motion.h2>
 
-      <div className="flex flex-col md:flex-row gap-4 md:items-center mb-4">
+      <motion.div
+        className="flex flex-col md:flex-row gap-4 md:items-center mb-4"
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3 }}
+      >
         <input
           type="text"
           placeholder="Search city or village..."
@@ -67,22 +85,31 @@ const MapLocationPicker = () => {
           className="flex-1 px-4 py-2 border rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <div className="flex gap-2">
-          <button
+          <motion.button
             onClick={handleSearch}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
           >
             🔍 Search
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             onClick={getCurrentLocation}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm"
           >
             📌 Use Current Location
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="h-[350px] md:h-[500px] w-full rounded-lg overflow-hidden shadow-md">
+      <motion.div
+        className="h-[350px] md:h-[500px] w-full rounded-lg overflow-hidden shadow-md"
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
         <MapContainer
           center={[latLng.lat, latLng.lng]}
           zoom={6}
@@ -93,12 +120,17 @@ const MapLocationPicker = () => {
           <MapClickHandler setLatLng={setLatLng} />
           <MapUpdater center={[latLng.lat, latLng.lng]} />
         </MapContainer>
-      </div>
+      </motion.div>
 
-      <p className="text-center mt-4 text-base md:text-lg">
+      <motion.p
+        className="text-center mt-4 text-base md:text-lg"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+      >
         📌 Selected Location: <strong>{latLng.lat.toFixed(4)}, {latLng.lng.toFixed(4)}</strong>
-      </p>
-    </div>
+      </motion.p>
+    </motion.div>
   );
 };
 
