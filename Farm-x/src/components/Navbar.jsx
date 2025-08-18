@@ -6,7 +6,7 @@ function Navigation (){
   return (
       <ul className='nav-ul'>
         <li className='nav-li'><Link className='nav-link' to="/">Home</Link></li>
-        <li className='nav-li'><Link className='nav-link' to="/about">About</Link></li>
+        <li className='nav-li'><Link className='nav-link' to="/Weather">Weather</Link></li>
         <li className='nav-li'><Link className='nav-link' to="/services">Services</Link></li>
         <li className='nav-li'><Link className='nav-link' to="/contact">Contact</Link></li>
       </ul>
